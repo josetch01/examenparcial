@@ -3,7 +3,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .models import TipoDoc, TipoSeg,Paciente,Especialidad
+from .models import TipoDoc, TipoSeg,Paciente,Especialidad,Doctor,Cita
 from django import forms
 
 # Create your views here.
@@ -158,5 +158,84 @@ class especialidadesDelete(DeleteView):
 
     def form_valid(self, request, *args, **kwargs):
         messages.success(self.request, "La especialidad fue eliminado correctamente.")
+        return super().delete(request, *args, **kwargs)
+    
+class doctorList(ListView):
+    model = Doctor
+    context_object_name = "doctores"
+    template_name = "citas/doctor_list.html"
+    
+class doctorCreate(CreateView):
+    model = Doctor
+    fields = ["nombre_doctor","doctor_direccion","doctor_telefono"]
+    success_url = reverse_lazy("doctores")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "El doctor fue creado correctamente.")
+        return super(doctorCreate, self).form_valid(form)
+    
+class doctorUpdate(UpdateView):
+    model = Doctor
+    fields = ["nombre_doctor","doctor_direccion","doctor_telefono"]
+    success_url = reverse_lazy("doctores")
+
+    def form_valid(self, form):
+        messages.success(self.request, "El doctor fue actualizado correctamente.")
+        return super(doctorUpdate, self).form_valid(form)
+    
+class doctorDelete(DeleteView):
+    model = Doctor
+    success_url = reverse_lazy("doctores")
+
+    def form_valid(self, request, *args, **kwargs):
+        messages.success(self.request, "El doctor fue eliminado correctamente.")
+        return super().delete(request, *args, **kwargs)
+    
+class citasList(ListView):
+    model = Cita
+    context_object_name = "citas"
+    template_name = "citas/citas_list.html"
+
+
+class citasForm(forms.ModelForm):
+    class Meta:
+        model = Cita
+        fields = ["fecha_cita","observaciones",  "especialidad", "doctor", "paciente"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['especialidad'].label_from_instance = lambda obj: obj.especialidad_nombre
+        self.fields['doctor'].label_from_instance = lambda obj: obj.nombre_doctor
+        self.fields['paciente'].label_from_instance = lambda obj: obj.nombres
+
+
+class citasCreate(CreateView):
+    model = Cita
+    form_class = citasForm
+    success_url = reverse_lazy("citas")
+    template_name = "citas/citas_form.html"
+
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "La cita fue creado correctamente.")
+        return super().form_valid(form)
+    
+class citasUpdate(UpdateView):
+    model = Cita
+    form_class = citasForm
+    success_url = reverse_lazy("citas")
+
+    def form_valid(self, form):
+        messages.success(self.request, "La cita fue actualizado correctamente.")
+        return super(citasUpdate, self).form_valid(form)
+    
+class citasDelete(DeleteView):
+    model = Cita
+    success_url = reverse_lazy("citas")
+
+    def form_valid(self, request, *args, **kwargs):
+        messages.success(self.request, "La cita fue eliminado correctamente.")
         return super().delete(request, *args, **kwargs)
     

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from .views import (home,documentoList,documentoCreate,documentoUpdate,documentoDelete,seguroList,seguroCreate,seguroUpdate,seguroDelete,pacienteList,pacienteCreate,pacienteUpdate,pacienteDelete,especialidadesList,especialidadesCreate,especialidadesUpdate,especialidadesDelete)
+from .views import (home,documentoList,documentoCreate,documentoUpdate,documentoDelete,seguroList,seguroCreate,seguroUpdate,seguroDelete,pacienteList,pacienteCreate,pacienteUpdate,pacienteDelete,especialidadesList,especialidadesCreate,especialidadesUpdate,especialidadesDelete,doctorList,doctorCreate,doctorUpdate,doctorDelete,citasList,citasCreate,citasUpdate,citasDelete)
 
 urlpatterns = [
     path('', home, name='home'),
@@ -25,4 +25,14 @@ urlpatterns = [
     path("especialidades/create/",especialidadesCreate.as_view(),name="especialidades-create"),
     path("especialidades/update/<int:pk>/",especialidadesUpdate.as_view(),name="especialidades-update"),
     path("especialidades/delete/<int:pk>/",especialidadesDelete.as_view(),name="especialidades-delete",),
+    
+    path("doctores/", doctorList.as_view(), name="doctores"),
+    path("doctores/create/", doctorCreate.as_view(), name="doctores-create"),
+    path("doctores/update/<int:pk>/", doctorUpdate.as_view(), name="doctores-update"),
+    path("doctores/delete/<int:pk>/", doctorDelete.as_view(), name="doctores-delete"),
+    
+    path("citas/", citasList.as_view(), name="citas"),
+    path("citas/create/", citasCreate.as_view(), name="citas-create"),
+    path("citas/update/<int:pk>/", citasUpdate.as_view(), name="citas-update"),
+    path("citas/delete/<int:pk>/", citasDelete.as_view(), name="citas-delete"),
 ]
